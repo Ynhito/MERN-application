@@ -5,7 +5,6 @@ import { Formik } from 'formik';
 import { defaultValues, schema, FormValues } from './helpers/form'
 import { useHttp } from '../../hooks/http.hook';
 import { toast } from 'react-toastify';
-import { loginHandler } from '../../api/login';
 import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
 const AuthPage = () => {
@@ -58,6 +57,7 @@ const AuthPage = () => {
                                             error={(!!errors.email && touched.email) || false}
                                         />
                                         <TextField
+                                            type="password"
                                             className={classes.input}
                                             name="password"
                                             defaultValue={values.password}
@@ -84,7 +84,9 @@ const AuthPage = () => {
                         Войти
                 </Button>
                     <p>Нет аккаунта?</p>
-                    <NavLink to="/register">
+                    <NavLink
+                    className={classes.navlink}
+                    to="/register">
                         Зарегистрироваться
                     </NavLink>
                 </div>
