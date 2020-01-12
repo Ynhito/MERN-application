@@ -31,26 +31,19 @@ async function start() {
             useCreateIndex: true,
         });
         connection.connect();
-        // connection.query(`
-        // INSERT INTO пользователи (Email, Пароль, Логин) VALUES
-        // ('test@mail.ru', 'password123', 'Login2');
-        // `, function(err, rows, fields) {
-        //     if (err) throw err;
-        //     console.log('The solution is: ', rows[1]);
-        //   });
-        // connection.query('DELETE FROM пользователи WHERE Логин = "Login2"', function(err, rows, fields) {
-        //     if (err) throw err;
-        //     console.log('The solution is: ', rows[0]);
-        //   });
-        // connection.query('SELECT * FROM `test`', function(err, rows, fields) {
-        //     if (err) throw err;
-        //     console.log('The solution is: ', rows[0]);
-        //   });
-        // connection.query('SELECT * FROM `Пользователи`', function(err, rows, fields) {
-        //     if (err) throw err;
-        //     console.log('The solution is: ', rows);
-        //   });
-        app.listen(PORT, () => console.log(`App has been started on ${PORT} port!`))
+        const server = app.listen(PORT, () => console.log(`App has been started on ${PORT} port!`))
+        const io = require('socket.io')(server);
+        io.on('connection', (socket) => {
+            console.log('new use connected!')
+            socket.username = "Anonymus";
+            socket.on('change_username', (data) => {
+                socket.username = data.username;
+            })
+            // socket.emit("FromAPI", `Your id is ${socket.username}`);
+            socket.on('new_message', (data) => {
+                io.sockets.emit('new_message', {message: data.message, username: socket.username})
+            })
+        })
     }
     catch(e) {
         console.log('Server Error!', e.message);

@@ -16,6 +16,9 @@ const CreatePage = () => {
                 <NavLink to={`/detail/${auth.userId}`}>
                     Detail
                 </NavLink>
+                <NavLink to={`/chat`}>
+                    Chat
+                </NavLink>
                 <Button onClick={logout}>
                     Выйти
                 </Button>
