@@ -5,6 +5,7 @@ import CreatePage from './pages/create/CreatePage';
 import DetailPage from './pages/detail/DetailPage';
 import AuthPage from './pages/auth/AuthPage';
 import RegisterPage from './pages/register/RegisterPage';
+import ChatPage from './pages/chat/ChatPage';
 
 export const useRoutes = isAuth => {
   if (isAuth) {
@@ -18,6 +19,9 @@ export const useRoutes = isAuth => {
             </Route>
             <Route path="/detail/:id">
                 <DetailPage />
+            </Route>
+            <Route path="/chat">
+                <ChatPage />
             </Route>
             <Redirect to="/create"/>
         </Switch>
