@@ -17,11 +17,11 @@ const useStyles = makeStyles({
 });
 
 interface item {
-    Email: string;
-    Пароль: string;
-    Логин: string;
-    'Номер телефона': number;
-    'Новый пользователь': boolean;
+    Название: string;
+    'Ёмкость батареи': string;
+    'Макс скорость': string;
+    'Мощность двигателя': number;
+    Цена: boolean;
 }
 
 interface data {
@@ -36,7 +36,7 @@ export default function SimpleTable() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    async function onRegister() {
+    async function onGetData() {
         try {
             const data = await request('/api/users/find', 'GET')
             setData(data)
@@ -44,7 +44,7 @@ export default function SimpleTable() {
     }
 
     useEffect(() => {
-        onRegister()
+        onGetData()
     }, [])
     
 
@@ -74,7 +74,7 @@ export default function SimpleTable() {
                 </TableHead>
                 <TableBody>
                     {data.rows.map(row => (
-                        <TableRow key={row.Email}>
+                        <TableRow key={row.Название}>
                             {Object.values(row).map(e => (
                                 <TableCell align="center">{e}</TableCell>
                             ))}

@@ -4,7 +4,7 @@ import { Button, TextField, Typography } from '@material-ui/core';
 import { AuthContext } from '../../../context/AuthContext';
 import {NavLink} from 'react-router-dom';
 import socketIOClient from "socket.io-client";
-import { socket } from '../../api/socket';
+// import { socket } from '../../api/socket';
 
 const ChatPage = () => {
 
@@ -20,13 +20,13 @@ const ChatPage = () => {
         // socket
         // socket.emit('change_username', {username: auth.userId})
         // socket.on("FromAPI", (data: any) => setData(data))
-        socket.on("new_message", (data: any) => {
-            console.log(data)
-            setMessages((m:any) => m.concat(data))
-        })
+        // socket.on("new_message", (data: any) => {
+        //     console.log(data)
+        //     setMessages((m:any) => m.concat(data))
+        // })
     }, []) 
     const sendMessage = () => {
-        socket.emit("new_message", {message: message})
+        // socket.emit("new_message", {message: message})
     }
     console.log(messages)
     return (

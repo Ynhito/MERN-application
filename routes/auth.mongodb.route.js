@@ -28,24 +28,22 @@ router.post(
       }
 
       const { email, password } = req.body;
-      
-      await connection.query("SELECT * FROM пользователи WHERE Email=?", [email], function (err, rows) {
-        if (err) return console.log(err);
-        if (rows.length > 0) {
-          res.status(400).json({ message: 'Такой пользователь уже существует!' })
-        }
-      });
+      const candidate = await User.findOne({ email });
+
+      if (candidate) {
+        return res.status(400).json({ message: 'Такой пользователь уже существует!' })
+      }
 
       const hashedPassword = await bcrypt.hash(password, 12);
+      const user = new User({
+        email,
+        password: hashedPassword
+      })
 
-      await connection.query("INSERT INTO пользователи (Email, Пароль) VALUES (?,?)", [email, hashedPassword], function (err) {
-        if (err) {
-          return console.log(err)
-        } else {
-          res.status(201).json({ message: 'Пользователь создан' })
-        };
-       
-      });
+      await user.save()
+
+      res.status(201).json({ message: 'Пользователь создан' })
+
 
     }
     catch (e) {
@@ -72,28 +70,25 @@ router.post(
       }
       const { email, password } = req.body;
 
-      connection.query("SELECT * FROM пользователи WHERE Email=?", [email], function (err, rows) {
-        if (err) return console.log(err);
-        if (rows.length < 1) {
-          res.status(400).json({ message: 'Пользователь не найден' })
-        }
+      const user = await User.findOne({ email })
 
-        const user = rows[0];
-        const isMatch = bcrypt.compare(password, rows[0]['Пароль']);
+      if (!user) {
+        return res.status(400).json({ message: 'Пользователь не найден' })
+      }
 
-        if (!isMatch) {
-          return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
-        }
+      const isMatch = await bcrypt.compare(password, user.password);
 
-        const token = jwt.sign(
-          { userId: user['Номер телефона'] },
-          CONFIG.get('jwtSecret'),
-          { expiresIn: '1h' }
-        )
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
+      }
 
-        res.json({ token, userId: user['Номер телефона'] })
-        res.json({message: 'qwdqwd'})
-      });
+      const token = jwt.sign(
+        { userId: user.id },
+        CONFIG.get('jwtSecret'),
+        { expiresIn: '1h' }
+      )
+
+      res.json({token, userId: user.id})
 
     }
     catch (e) {

@@ -1,6 +1,4 @@
-const { Router } = require('express');
-const CONFIG = require('config');
-const User = require('../models/User')
+const {Router} = require('express');
 
 const router = Router();
 
@@ -8,7 +6,7 @@ router.get(
     '/find',
     async (req, res) => {
       try {
-        connection.query("SELECT * FROM пользователи", function(err, rows, fields) {
+        connection.query("SELECT * FROM electrocars", function(err, rows, fields) {
           if(err) return console.log(err);
           res.status(201).json({ rows: rows, fields: fields})
         });
