@@ -1,6 +1,6 @@
 // playground requires you to assign document definition to a variable called dd
 
-import Logo from './logo.jpg';
+// import Logo from './logo.jpg';
 
 export var dd = {
 	content: [

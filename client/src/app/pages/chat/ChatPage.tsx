@@ -31,14 +31,14 @@ const ChatPage = () => {
     console.log(messages)
     return (
         <div>
-            <div className={classes.header}>
+            {/* <div className={classes.header}>
                 <NavLink to={`/detail/${auth.userId}`}>
                     Detail
                 </NavLink>
                 <Button onClick={logout}>
                     Выйти
                 </Button>
-            </div>
+            </div> */}
             <div className="flex w-full fixed bottom-0">
                 <TextField
                 className="w-10/12"
