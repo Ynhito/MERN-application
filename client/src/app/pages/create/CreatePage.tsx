@@ -22,18 +22,9 @@ const FormValues = {
 
 const CreatePage = () => {
 
-    console.log('RENDER')
-
-    let count = 0;
-    function Counter() {
-        count++;
-        // console.log(count)
-        if (count > 10) {
-            return;
-        }
-        Counter();
+    const test = () => {
+        console.log('test')
     }
-    Counter()
 
     const auth = useContext(AuthContext);
     const logout = () => {
