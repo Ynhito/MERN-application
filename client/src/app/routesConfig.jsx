@@ -6,6 +6,8 @@ import DetailPage from './pages/detail/DetailPage';
 import AuthPage from './pages/auth/AuthPage';
 import RegisterPage from './pages/register/RegisterPage';
 import ChatPage from './pages/chat/ChatPage';
+import GiftsPage from './pages/gifts/GiftsPage';
+import GiftView from './pages/gifts/pages/GiftView/index';
 
 export const useRoutes = isAuth => {
   if (isAuth) {
@@ -22,6 +24,12 @@ export const useRoutes = isAuth => {
             </Route>
             <Route path="/chat">
                 <ChatPage />
+            </Route>
+            <Route path="/gifts" exact>
+                <GiftsPage />
+            </Route>
+            <Route path="/gifts/view/:id" exact>
+                <GiftView />
             </Route>
             <Redirect to="/create"/>
         </Switch>

@@ -22,18 +22,12 @@ const FormValues = {
 
 const CreatePage = () => {
 
-    console.log('RENDER')
-
-    let count = 0;
-    function Counter() {
-        count++;
-        // console.log(count)
-        if (count > 10) {
-            return;
-        }
-        Counter();
+    const test = () => {
+        console.log('test');
+        console.log('it \'s message from gitLearn')
+        console.log('doing good')
+        console.log('doing wonderfull')
     }
-    Counter()
 
     const auth = useContext(AuthContext);
     const logout = () => {
@@ -45,29 +39,8 @@ const CreatePage = () => {
     );
     const { loading, error, request, clearError } = useHttp();
 
-    async function getFavorite() {
-        try {
-            const data = await request('/favorite', 'GET')
-            console.log(data)
-        }
-        catch(e) {
-            console.log('error')
-        }
-    }
-
     return (
         <div>
-            <div className={classes.header}>
-                <NavLink to={`/detail/${auth.userId}`}>
-                    Detail
-                </NavLink>
-                <NavLink to={`/chat`}>
-                    Chat
-                </NavLink>
-                <Button onClick={logout}>
-                    Выйти
-                </Button>
-            </div>
             <Formik
                 initialValues={createHelpers.defaultValues}
                 onSubmit={(values: any) => console.log(values)}
@@ -101,7 +74,7 @@ const CreatePage = () => {
                                 Генерировать
                             </Button>
                             <Button
-                            onClick={getFavorite}
+                            // onClick={getFavorite}
                             >
                                 Получить
                             </Button>
