@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const CONFIG = require('config');
 const { check, validationResult } = require('express-validator');
-const User = require('../models/User')
+const mysqlLib = require('../@libs/mysql.lib');
 
 const router = Router();
 
@@ -28,24 +28,17 @@ router.post(
       }
 
       const { email, password } = req.body;
-      
-      await connection.query("SELECT * FROM пользователи WHERE Email=?", [email], function (err, rows) {
-        if (err) return console.log(err);
-        if (rows.length > 0) {
-          res.status(400).json({ message: 'Такой пользователь уже существует!' })
-        }
-      });
+
+      const rows = await mysqlLib.executeQuery("SELECT * FROM пользователи WHERE Email=?", [email]);
+      if (rows.length > 0) {
+        res.status(400).json({ message: 'Такой пользователь уже существует!' })
+      }
 
       const hashedPassword = await bcrypt.hash(password, 12);
 
-      await connection.query("INSERT INTO пользователи (Email, Пароль) VALUES (?,?)", [email, hashedPassword], function (err) {
-        if (err) {
-          return console.log(err)
-        } else {
-          res.status(201).json({ message: 'Пользователь создан' })
-        };
-       
-      });
+      await mysqlLib.executeQuery("INSERT INTO пользователи (Email, Пароль) VALUES (?,?)", [email, hashedPassword]);
+
+      res.status(201).json({ message: 'Пользователь создан' })
 
     }
     catch (e) {
@@ -72,28 +65,25 @@ router.post(
       }
       const { email, password } = req.body;
 
-      connection.query("SELECT * FROM пользователи WHERE Email=?", [email], function (err, rows) {
-        if (err) return console.log(err);
-        if (rows.length < 1) {
-          res.status(400).json({ message: 'Пользователь не найден' })
-        }
+      const user = await (await mysqlLib.executeQuery("SELECT * FROM пользователи WHERE Email=?", [email]))[0];
 
-        const user = rows[0];
-        const isMatch = bcrypt.compare(password, rows[0]['Пароль']);
+      if (!user) {
+        res.status(400).json({ message: 'Пользователь не найден' })
+      }
 
-        if (!isMatch) {
-          return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
-        }
+      const isMatch = await bcrypt.compare(password, user['Пароль']);
 
-        const token = jwt.sign(
-          { userId: user['Номер телефона'] },
-          CONFIG.get('jwtSecret'),
-          { expiresIn: '1h' }
-        )
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
+      }
+
+      const token = jwt.sign(
+        { userId: user['Номер телефона'] },
+        CONFIG.get('jwtSecret'),
+        { expiresIn: '1h' }
+      )
 
         res.json({ token, userId: user['Номер телефона'] })
-        res.json({message: 'qwdqwd'})
-      });
 
     }
     catch (e) {

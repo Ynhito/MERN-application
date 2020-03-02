@@ -45,29 +45,8 @@ const CreatePage = () => {
     );
     const { loading, error, request, clearError } = useHttp();
 
-    async function getFavorite() {
-        try {
-            const data = await request('/favorite', 'GET')
-            console.log(data)
-        }
-        catch(e) {
-            console.log('error')
-        }
-    }
-
     return (
         <div>
-            <div className={classes.header}>
-                <NavLink to={`/detail/${auth.userId}`}>
-                    Detail
-                </NavLink>
-                <NavLink to={`/chat`}>
-                    Chat
-                </NavLink>
-                <Button onClick={logout}>
-                    Выйти
-                </Button>
-            </div>
             <Formik
                 initialValues={createHelpers.defaultValues}
                 onSubmit={(values: any) => console.log(values)}
@@ -101,7 +80,7 @@ const CreatePage = () => {
                                 Генерировать
                             </Button>
                             <Button
-                            onClick={getFavorite}
+                            // onClick={getFavorite}
                             >
                                 Получить
                             </Button>
