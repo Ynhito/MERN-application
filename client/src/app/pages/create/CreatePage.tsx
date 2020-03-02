@@ -25,6 +25,7 @@ const CreatePage = () => {
     const test = () => {
         console.log('test')
         console.log('test2')
+        console.log('test3')
     }
 
     const auth = useContext(AuthContext);
