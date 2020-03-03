@@ -27,6 +27,7 @@ const CreatePage = () => {
         console.log('it \'s message from gitLearn')
         console.log('doing good')
         console.log('doing wonderfull')
+        console.log('new code for rebase')
     }
 
     const auth = useContext(AuthContext);
