@@ -23,11 +23,18 @@ const FormValues = {
 const CreatePage = () => {
 
     const test = () => {
-        console.log('test');
-        console.log('it \'s message from gitLearn')
-        console.log('doing good')
-        console.log('doing wonderfull')
-        console.log('new code for rebase')
+        const {log} = console;
+        const logger = () => {
+            return () => {
+                return () => {
+                    log('qwe123')
+                    log('qwe456')
+                    log('qwe789')
+                    log('ONE TWO THREE')
+                    log('git rebase -i origin/tet')
+                }
+            }
+        }
     }
 
     const auth = useContext(AuthContext);

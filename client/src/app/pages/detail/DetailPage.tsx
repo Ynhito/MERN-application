@@ -40,13 +40,13 @@ export default function SimpleTable() {
         try {
             const data = await request('/api/users/find', 'GET')
             setData(data)
-        } catch(e) {}
+        } catch (e) { }
     }
 
     useEffect(() => {
         onGetData()
     }, [])
-    
+
 
     const handleChangeRowsPerPage = (event: any) => {
         setRowsPerPage(event.target.value)
@@ -63,35 +63,35 @@ export default function SimpleTable() {
 
     return (
         <>
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        {data.fields.map(e => (
-                            <TableCell align="center">{e.name}</TableCell>
-                        ))}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {data.rows.map(row => (
-                        <TableRow key={row.Название}>
-                            {Object.values(row).map(e => (
+            <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            {Object.keys(data.rows[0]).map(e => (
                                 <TableCell align="center">{e}</TableCell>
                             ))}
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-        <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={data.rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+                    </TableHead>
+                    <TableBody>
+                        {data.rows.map(row => (
+                            <TableRow key={row.Название}>
+                                {Object.values(row).map(e => (
+                                    <TableCell align="center">{e}</TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={data.rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
         </>
     );
 }

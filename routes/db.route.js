@@ -1,16 +1,23 @@
 const {Router} = require('express');
-
 const router = Router();
+const electroCardApp = require('../methods/Electrocars/find');
 
 router.get(
     '/find',
     async (req, res) => {
+
+      const params = {
+        orderBy: req.body.orderBy || 'title',
+        order: req.body.order || 'asc',
+        query: req.body.query || '',
+        page: req.body.page || 0,
+        rowPerPage: req.body.rowPerPage || 10,
+      }
+
       try {
-        connection.query("SELECT * FROM electrocars", function(err, rows, fields) {
-          if(err) return console.log(err);
-          res.status(201).json({ rows: rows, fields: fields})
-        });
-  
+        const rows = await electroCardApp(params);
+        console.log(rows)
+        res.status(201).json({ rows })
       }
       catch (e) {
         res.status(500).json({ message: 'Что-то пошло не так' })
@@ -18,3 +25,4 @@ router.get(
     })
 
 module.exports = router;
+

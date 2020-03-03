@@ -1,4 +1,4 @@
-declare namespace Contracts {
+export declare namespace Contracts {
     namespace Gift {
         interface InAction {
             find: null;
