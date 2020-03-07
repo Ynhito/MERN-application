@@ -14,6 +14,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import { dd } from './pdfExample';
 import { sum_letters } from './number2Text';
 import { useHttp } from '../../hooks/http.hook';
+import { useRouter } from './../../../hooks/useRouter';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const FormValues = {
@@ -22,6 +23,8 @@ const FormValues = {
 
 const CreatePage = () => {
 
+    const router = useRouter();
+    
     const test = () => {
         console.log('test');
         console.log('it \'s message from gitLearn')
@@ -75,7 +78,7 @@ const CreatePage = () => {
                                 Генерировать
                             </Button>
                             <Button
-                            // onClick={getFavorite}
+                            onClick={() => router.history.push("/gifts")}
                             >
                                 Получить
                             </Button>
