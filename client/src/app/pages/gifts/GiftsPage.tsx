@@ -24,11 +24,11 @@ interface item {
     description: string;
     author: string;
     id: number;
+    logo: string;
 }
 
 interface data {
-    rows: item[],
-    fields: any[]
+    rows: item[]
 }
 
 const GiftsPage = (props: any) => {
@@ -66,6 +66,14 @@ const GiftsPage = (props: any) => {
     if (!data) {
         return <></>
     }
+
+    const url = data.rows[0].logo;
+    fetch(url)
+        .then(res => res.blob())
+        .then(blob => {
+            const file = new File([blob], "File name",{ type: "image/png" })
+            console.log(file)
+    })
     
     return (
         <>

@@ -67,9 +67,9 @@ export default function SimpleTable() {
             <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        {data.fields.map(e => (
-                            <TableCell align="center">{e.name}</TableCell>
-                        ))}
+                        {Object.keys(data.rows[0]).map(e => (
+                                <TableCell align="center">{e}</TableCell>
+                            ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>

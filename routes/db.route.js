@@ -1,4 +1,5 @@
 const {Router} = require('express');
+const mysqlLib = require('../@libs/mysql.lib');
 
 const router = Router();
 
@@ -6,14 +7,11 @@ router.get(
     '/find',
     async (req, res) => {
       try {
-        connection.query("SELECT * FROM electrocars", function(err, rows, fields) {
-          if(err) return console.log(err);
-          res.status(201).json({ rows: rows, fields: fields})
-        });
-  
+        const rows = await mysqlLib.executeQuery('SELECT * FROM electrocars');
+        res.status(201).json({ rows })
       }
       catch (e) {
-        res.status(500).json({ message: 'Что-то пошло не так' })
+          res.status(500).json({ message: 'Что-то пошло не так' })
       }
     })
 

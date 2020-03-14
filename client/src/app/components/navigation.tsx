@@ -13,7 +13,7 @@ const Navigation = (props: any) => {
     return (
         <>
             <MenuItem onClick={() => {
-                props.history.push(`/detail/${auth.userId}`)
+                props.history.push(`/detail`)
             }}>
                 Table
             </MenuItem>

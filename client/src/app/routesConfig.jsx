@@ -19,7 +19,7 @@ export const useRoutes = isAuth => {
             <Route path="/create" exact>
                 <CreatePage />
             </Route>
-            <Route path="/detail/:id">
+            <Route path="/detail">
                 <DetailPage />
             </Route>
             <Route path="/chat">
