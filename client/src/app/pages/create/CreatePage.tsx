@@ -14,6 +14,10 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import { dd } from './pdfExample';
 import { sum_letters } from './number2Text';
 import { useHttp } from '../../hooks/http.hook';
+import Wrapper from './../../../test/index';
+import Observable from './../../../test/observable/Observable'
+import createEvent from './../../../test/observable/createEvent';
+import useStore from './../../../test/observable/useStore';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const FormValues = {
@@ -22,20 +26,20 @@ const FormValues = {
 
 const CreatePage = () => {
 
-    const test = () => {
-        const {log} = console;
-        const logger = () => {
-            return () => {
-                return () => {
-                    log('qwe123')
-                    log('qwe456')
-                    log('qwe789')
-                    log('ONE TWO THREE')
-                    log('git rebase -i origin/tet')
-                }
-            }
-        }
+    const initialState = {
+        name: 'Julia',
+        age: 20
     }
+    
+    const store = new Observable<typeof initialState>(initialState);
+
+    const firstEvent = createEvent();
+
+    console.log(store.on(firstEvent, (state, payload) => ({
+        ...state,
+        age: 19,
+        name: 'Dima'
+    })))
 
     const auth = useContext(AuthContext);
     const logout = () => {
@@ -60,33 +64,34 @@ const CreatePage = () => {
                     return (
                         <form onSubmit={handleSubmit} id="FORMA">
                             <div style={{ display: 'flex' }}>
-                            <div style={{ width: '400px', height: '200px' }}>
-                                <Editor
-                                    editorState={editorState}
-                                    onEditorStateChange={setEditorState}
-                                    wrapperClassName="demo-wrapper"
-                                    editorClassName="demo-editor"
-                                    wrapperStyle={{
-                                        // width: '400px',
-                                        height: '200px',
-                                    }}
-                                    editorStyle={{
-                                        border: '2px solid #F5F5F5',
+                                <div style={{ width: '400px', height: '200px' }}>
+                                    <Editor
+                                        editorState={editorState}
+                                        onEditorStateChange={setEditorState}
+                                        wrapperClassName="demo-wrapper"
+                                        editorClassName="demo-editor"
+                                        wrapperStyle={{
+                                            // width: '400px',
+                                            height: '200px',
+                                        }}
+                                        editorStyle={{
+                                            border: '2px solid #F5F5F5',
 
-                                    }}
-                                    onBlur={() => console.log('qwdqwd')}
-                                />
+                                        }}
+                                        onBlur={() => console.log('qwdqwd')}
+                                    />
+                                </div>
+                                <Button
+                                    onClick={() => pdfMake.createPdf(dd).download()}>
+                                    Генерировать
+                            </Button>
+                                <Wrapper />
+                                <Button
+                                // onClick={getFavorite}
+                                >
+                                    Получить
+                            </Button>
                             </div>
-                            <Button
-                            onClick={() => pdfMake.createPdf(dd).download()}>
-                                Генерировать
-                            </Button>
-                            <Button
-                            // onClick={getFavorite}
-                            >
-                                Получить
-                            </Button>
-                        </div>
                         </form>
                     );
                 }}

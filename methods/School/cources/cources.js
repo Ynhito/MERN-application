@@ -1,11 +1,11 @@
-const mysqlLib = require('../../@libs/mysql.lib');
-
+const mysqlLib = require('../../../@libs/mysql.lib');
+// ${params.query && `AND WHERE fio LIKE '%${params.query}%'`}
 const sqlRows = (params) => {
     return `
         SELECT * 
-        FROM electrocars 
-        ${params.query && `WHERE title LIKE '%${params.query}%'`}
-        ORDER BY ${params.orderBy} ${params.order}
+        FROM courses
+        ${params.query && `WHERE course_name LIKE '%${params.query}%'`}
+        ${params.courseId ? `WHERE courseId = ${params.courseId}` : ''}
         LIMIT ${params.rowPerPage}
         OFFSET ${params.offset}
     `
@@ -13,10 +13,10 @@ const sqlRows = (params) => {
 
 const sqlCount = `
   SELECT COUNT(*) as count
-  FROM electrocars
+  FROM courses
 `
 
-async function findElectroCardApp(params) {
+async function findSchoolCourcesApp(params) {
     try {
         const rows = await mysqlLib.executeQuery(sqlRows({
           ...params,
@@ -34,4 +34,4 @@ async function findElectroCardApp(params) {
       }
 }
 
-module.exports = findElectroCardApp;
+module.exports = findSchoolCourcesApp;

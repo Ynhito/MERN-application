@@ -7,22 +7,29 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { useHttp } from '../../hooks/http.hook';
 import { TablePagination, TableSortLabel, TextField } from '@material-ui/core';
 import axios from 'axios';
+import { useHttp } from '../../../hooks/http.hook';
+import { useRouter } from '../../../hooks/router.hook';
+import { RedirectConfig } from './../../../components/redirect';
 
 const useStyles = makeStyles({
     table: {
         minWidth: 650,
     },
+    row: {
+        '&:hover': {
+            backgroundColor: 'rgba(191, 153, 153, 0.5)',
+        },
+        cursor: 'pointer',
+    }
 });
 
 interface item {
-    title: string;
-    battery: string;
-    speed: string;
-    enginePower: number;
-    price: boolean;
+    courseId: number;
+    course_name: string;
+    lessonAmount: number;
+    lessonPrice: number;
 }
 
 interface IElectroCardsFind {
@@ -31,15 +38,15 @@ interface IElectroCardsFind {
 }
 
 const Labels = [
-    'title',
-    'battery',
-    'speed',
-    'enginePower',
-    'price',
+    {label: '№ Курса', id: 'courseId'},
+    {label: 'Название курса', id: 'course_name'},
+    {label: 'Кол-во занятий', id: 'lessonAmount'},
+    {label: 'Цена за 1 занятия', id: 'lessonPrice'},
 ]
 
-export default function SimpleTable() {
+export default function CoursesTable() {
     const classes = useStyles();
+    const router = useRouter<{id: string}>();
     const { loading, error, request, clearError } = useHttp();
     const [data, setData] = useState<IElectroCardsFind>({rows: [], count: 0});
     const [orderBy, setOrderBy] = useState<string | undefined>();
@@ -47,17 +54,21 @@ export default function SimpleTable() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [query, setQuery] = useState<string |undefined>();
+    const {id} = router.match.params;
 
+    console.log(id)
     async function onGetData(params: {
         page?: number,
         rowsPerPage?: number,
         order?: 'asc' | 'desc',
         orderBy?: string,
         query?: string,
+        courseId?: number,
     }) {
+        console.log(params)
 
         try {
-            const data = await (await (axios.get<IElectroCardsFind>('/api/electrocars/find', {params}))).data
+            const data = await (await (axios.get<IElectroCardsFind>('/api/school/cources/find', {params}))).data
             setData({rows: data.rows, count: data.count})
         } catch (e) { }
     }
@@ -68,9 +79,10 @@ export default function SimpleTable() {
             rowsPerPage,
             orderBy,
             order,
-            query
+            query,
+            courseId: id === 'undefined' ? undefined : +id,
         })
-    }, [page, rowsPerPage, orderBy, order, query])
+    }, [page, rowsPerPage, orderBy, order, query, id])
 
 
     const handleChangeRowsPerPage = (event: any) => {
@@ -101,23 +113,25 @@ export default function SimpleTable() {
                             {Labels.map(e => 
                             <TableCell align="center">
                             <TableSortLabel
-                                active={orderBy === e}
-                                direction={orderBy === e ? order : 'asc'}
-                                onClick={handleChangeSort(e)}
+                                active={orderBy === e.id}
+                                direction={orderBy === e.id ? order : 'asc'}
+                                onClick={handleChangeSort(e.id)}
                                 >
-                                {e}
+                                {e.label}
                             </TableSortLabel>
                             </TableCell>)}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {data.rows.length > 0 ? data.rows.map(row => (
-                            <TableRow>
-                                <TableCell align="center">{row.title}</TableCell>
-                                <TableCell align="center">{row.battery}</TableCell>
-                                <TableCell align="center">{row.speed}</TableCell>
-                                <TableCell align="center">{row.enginePower}</TableCell>
-                                <TableCell align="center">{row.price}</TableCell>
+                            <TableRow
+                            className={classes.row}
+                            // onClick={() => router.history.push(RedirectConfig.accounts(row.accountId))}
+                            >
+                                <TableCell align="center">{row.courseId}</TableCell>
+                                <TableCell align="center">{row.course_name}</TableCell>
+                                <TableCell align="center">{row.lessonAmount}</TableCell>
+                                <TableCell align="center">{row.lessonPrice}</TableCell>
                             </TableRow>
                         )) :
                         <TableRow>

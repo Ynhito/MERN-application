@@ -2,25 +2,18 @@ const express = require('express');
 const CONFIG = require('config');
 const mongoose = require('mongoose');
 const mysqllib = require('./@libs/mysql.lib');
-
-// const mysql = require('mysql');
-// const connection = mysql.createConnection({
-//   host     : 'localhost',
-//   user     : 'root',
-//   password : '',
-//   database : 'testbd'
-// });
-// global.connection = connection;
-
+// const saveFileS3Local = require('./@libs/file/saveFileS3Local')
 const app = express();
 
 app.use(express.json({ extended: true }));
 
 app.use('/api/auth', require('./routes/auth.route'));
 
-app.use('/api/users', require('./routes/db.route'));
+app.use('/api/electrocars', require('./routes/db.route'));
 
 app.use('/api/gifts', require('./routes/gifts.route'));
+
+app.use('/api/school', require('./routes/roboto_school.route'));
 
 app.get(
     '/favorite', (req, res) => {
@@ -39,12 +32,8 @@ const PORT = CONFIG.get('port') || 5000;
 
 async function start() {
     try {
-        // connection.connect();
-        // app.listen(PORT, () => console.log(`App has been started on ${PORT} port!`))
         mysqllib.connect().then(() => {
             console.log('Connected to mysql...')
-            // var routes = require('./api/routes/routes'); //importing route
-            // routes(app);
             app.listen(PORT, () => console.log(`App has been started on ${PORT} port!`))
           
           }).catch(e => {

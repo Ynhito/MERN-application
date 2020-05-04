@@ -7,22 +7,32 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { useHttp } from '../../hooks/http.hook';
 import { TablePagination, TableSortLabel, TextField } from '@material-ui/core';
 import axios from 'axios';
+import { useHttp } from '../../../hooks/http.hook';
+import { useRouter } from '../../../hooks/router.hook';
+import { RedirectConfig } from './../../../components/redirect';
 
 const useStyles = makeStyles({
     table: {
         minWidth: 650,
     },
+    row: {
+        '&:hover': {
+            backgroundColor: 'rgba(191, 153, 153, 0.5)',
+        },
+        cursor: 'pointer',
+    }
 });
 
 interface item {
+    accountId: number;
+    lessonId: number;
+    payment: boolean;
     title: string;
-    battery: string;
-    speed: string;
-    enginePower: number;
-    price: boolean;
+    teacherId: number;
+    courseId: number;
+    summa: number;
 }
 
 interface IElectroCardsFind {
@@ -31,14 +41,16 @@ interface IElectroCardsFind {
 }
 
 const Labels = [
-    'title',
-    'battery',
-    'speed',
-    'enginePower',
-    'price',
+    {label: '№ счёта', id: 'accountId'},
+    {label: 'Название занятия', id: 'title'},
+    {label: 'Сумма к оплате', id: 'summa'},
+    {label: 'Статус', id: 'payment'},
 ]
 
-export default function SimpleTable() {
+export default function AccountsTable() {
+    const router = useRouter<{id: string}>();
+    const {id} = router.match.params;
+    console.log(id)
     const classes = useStyles();
     const { loading, error, request, clearError } = useHttp();
     const [data, setData] = useState<IElectroCardsFind>({rows: [], count: 0});
@@ -53,11 +65,11 @@ export default function SimpleTable() {
         rowsPerPage?: number,
         order?: 'asc' | 'desc',
         orderBy?: string,
-        query?: string,
+        accountId: number,
     }) {
 
         try {
-            const data = await (await (axios.get<IElectroCardsFind>('/api/electrocars/find', {params}))).data
+            const data = await (await (axios.get<IElectroCardsFind>('/api/school/accounts/find', {params}))).data
             setData({rows: data.rows, count: data.count})
         } catch (e) { }
     }
@@ -68,9 +80,9 @@ export default function SimpleTable() {
             rowsPerPage,
             orderBy,
             order,
-            query
+            accountId: +id,
         })
-    }, [page, rowsPerPage, orderBy, order, query])
+    }, [page, rowsPerPage, orderBy, order, id])
 
 
     const handleChangeRowsPerPage = (event: any) => {
@@ -101,23 +113,25 @@ export default function SimpleTable() {
                             {Labels.map(e => 
                             <TableCell align="center">
                             <TableSortLabel
-                                active={orderBy === e}
-                                direction={orderBy === e ? order : 'asc'}
-                                onClick={handleChangeSort(e)}
+                                active={orderBy === e.id}
+                                direction={orderBy === e.id ? order : 'asc'}
+                                onClick={handleChangeSort(e.id)}
                                 >
-                                {e}
+                                {e.label}
                             </TableSortLabel>
                             </TableCell>)}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {data.rows.length > 0 ? data.rows.map(row => (
-                            <TableRow>
+                            <TableRow
+                            onClick={() => router.history.push(RedirectConfig.lessons(+id))}
+                            className={classes.row}
+                            >
+                                <TableCell align="center">{row.accountId}</TableCell>
                                 <TableCell align="center">{row.title}</TableCell>
-                                <TableCell align="center">{row.battery}</TableCell>
-                                <TableCell align="center">{row.speed}</TableCell>
-                                <TableCell align="center">{row.enginePower}</TableCell>
-                                <TableCell align="center">{row.price}</TableCell>
+                                <TableCell align="center">{row.summa}</TableCell>
+                                <TableCell align="center">{row.payment ? 'Оплачено' : 'Не оплачено'}</TableCell>
                             </TableRow>
                         )) :
                         <TableRow>

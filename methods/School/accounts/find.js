@@ -1,11 +1,12 @@
-const mysqlLib = require('../../@libs/mysql.lib');
+const mysqlLib = require('../../../@libs/mysql.lib');
 
 const sqlRows = (params) => {
     return `
         SELECT * 
-        FROM electrocars 
-        ${params.query && `WHERE title LIKE '%${params.query}%'`}
-        ORDER BY ${params.orderBy} ${params.order}
+        FROM accounts
+        INNER JOIN lessons
+        ON accounts.lessonId = lessons.lessonId
+        WHERE accountId = ${params.accountId}
         LIMIT ${params.rowPerPage}
         OFFSET ${params.offset}
     `
@@ -13,10 +14,10 @@ const sqlRows = (params) => {
 
 const sqlCount = `
   SELECT COUNT(*) as count
-  FROM electrocars
+  FROM accounts
 `
 
-async function findElectroCardApp(params) {
+async function findSchoolAccountsApp(params) {
     try {
         const rows = await mysqlLib.executeQuery(sqlRows({
           ...params,
@@ -34,4 +35,4 @@ async function findElectroCardApp(params) {
       }
 }
 
-module.exports = findElectroCardApp;
+module.exports = findSchoolAccountsApp;

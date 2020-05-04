@@ -1,5 +1,6 @@
 {
     "port": 5000,
     "jwtSecret": "witcher one love",
-    "mongoUrl": "mongodb+srv://dima:1734dima@cluster0-p1tta.mongodb.net/test?retryWrites=true&w=majority"
+    "mongoUrl": "mongodb+srv://dima:1734dima@cluster0-p1tta.mongodb.net/test?retryWrites=true&w=majority",
+    "minio": "http://192.168.99.100:9000/"
 }
