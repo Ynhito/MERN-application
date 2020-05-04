@@ -15,9 +15,6 @@ import { dd } from './pdfExample';
 import { sum_letters } from './number2Text';
 import { useHttp } from '../../hooks/http.hook';
 import Wrapper from './../../../test/index';
-import Observable from './../../../test/observable/Observable'
-import createEvent from './../../../test/observable/createEvent';
-import useStore from './../../../test/observable/useStore';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const FormValues = {
@@ -25,21 +22,6 @@ const FormValues = {
 }
 
 const CreatePage = () => {
-
-    const initialState = {
-        name: 'Julia',
-        age: 20
-    }
-    
-    const store = new Observable<typeof initialState>(initialState);
-
-    const firstEvent = createEvent();
-
-    console.log(store.on(firstEvent, (state, payload) => ({
-        ...state,
-        age: 19,
-        name: 'Dima'
-    })))
 
     const auth = useContext(AuthContext);
     const logout = () => {

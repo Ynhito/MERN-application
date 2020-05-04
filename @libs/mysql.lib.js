@@ -3,7 +3,7 @@ const mysqlConfig = {
     host     : 'localhost',
     user     : 'root',
     password : '',
-    database : 'practic'
+    database : 'testbd'
 }
 
 var pool = mysql.createPool(mysqlConfig);
