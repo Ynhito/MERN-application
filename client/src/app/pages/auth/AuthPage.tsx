@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Button, TextField, Snackbar } from '@material-ui/core';
+import { Button, TextField, Snackbar, Box } from '@material-ui/core';
 import classes from './styles.module.scss';
 import { Formik } from 'formik';
 import { defaultValues, schema, FormValues } from './helpers/form'
@@ -45,7 +45,7 @@ const AuthPage = () => {
                         touched }) => (
                             <>
                                 <form id="auth" onSubmit={handleSubmit} className="mt-6">
-                                    <div className="flex flex-col">
+                                    <Box display="flex" flexDirection="column">
                                         <TextField
                                             className={classes.input}
                                             name="email"
@@ -67,7 +67,7 @@ const AuthPage = () => {
                                             helperText={touched.password && errors.email && errors.password}
                                             error={(!!errors.password && touched.password) || false}
                                         />
-                                    </div>
+                                    </Box>
                                 </form>
                             </>
                         )}

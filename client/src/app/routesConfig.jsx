@@ -9,11 +9,17 @@ import ChatPage from './pages/chat/ChatPage';
 import GiftsPage from './pages/gifts/GiftsPage';
 import GiftView from './pages/gifts/pages/GiftView/index';
 import { Menu, MenuItem, Button } from '@material-ui/core';
-import StudentsTable from './pages/School/students/index';
-import AccountsTable from './pages/School/accounts/index';
-import LessonsTable from './pages/School/lessons/lessons';
-import CoursesTable from './pages/School/cources/index';
+import StudentsTable from './pages/School/students/pages/list/index';
+import AccountsTable from './pages/School/visit/index';
+import LessonsTable from './pages/School/lessons/pages/list';
+import CoursesTable from './pages/School/cources/pages/list/index';
 import TeachersTable from './pages/School/teachers/index';
+import CoursesInfo from './pages/School/cources/pages/info/info';
+import StudentCreateForm from './pages/School/students/pages/create/index';
+import CourseCreateForm from './pages/School/cources/pages/create/index';
+import { RedirectLessonsConfig } from './pages/School/lessons/redirect';
+import LessonCreateForm from './pages/School/lessons/pages/create/index';
+import LessonInfoTable from './pages/School/lessons/pages/info/index';
 
 export const useRoutes = isAuth => {
 
@@ -38,22 +44,37 @@ export const useRoutes = isAuth => {
                 <Route path="/gifts/view/:id" exact>
                     <GiftView />
                 </Route>
-                <Route path="/students" exact>
+                <Route path="/students/list" exact>
                     <StudentsTable />
                 </Route>
                 <Route path="/teachers/:id?" exact>
                     <TeachersTable />
                 </Route>
-                <Route path="/lessons/:id?" exact>
+                <Route path={RedirectLessonsConfig.list} exact>
                     <LessonsTable />
                 </Route>
-                <Route path="/cources/:id?" exact>
+                <Route path={RedirectLessonsConfig.create} exact>
+                    <LessonCreateForm />
+                </Route>
+                <Route path="/lessons/info/:courseId/:lessonId" exact>
+                    <LessonInfoTable />
+                </Route>
+                <Route path="/cources/list" exact>
                     <CoursesTable />
+                </Route>
+                <Route path="/cources/info/:id" exact>
+                    <CoursesInfo />
+                </Route>
+                <Route path="/cources/create" exact>
+                    <CourseCreateForm />
+                </Route>
+                <Route path="/students/create" exact>
+                    <StudentCreateForm />
                 </Route>
                 <Route path="/accounts/:id" exact>
                     <AccountsTable />
                 </Route>
-                <Redirect to="/create" />
+                <Redirect to="/cources/list" />
             </Switch>
         );
     }

@@ -11,7 +11,7 @@ import { TablePagination, TableSortLabel, TextField } from '@material-ui/core';
 import axios from 'axios';
 import { useHttp } from '../../../hooks/http.hook';
 import { useRouter } from '../../../hooks/router.hook';
-import { RedirectConfig } from './../../../components/redirect';
+import { RedirectConfig } from '../../../components/redirect';
 
 const useStyles = makeStyles({
     table: {
@@ -26,16 +26,13 @@ const useStyles = makeStyles({
 });
 
 interface item {
+    accountId: number;
     lessonId: number;
+    payment: boolean;
     title: string;
-    course_name: string;
     teacherId: number;
     courseId: number;
-    fio: string;
-    phone: number;
-    lessonPrice: number;
-    lessonAmount: number;
-    date: Date;
+    summa: number;
 }
 
 interface IElectroCardsFind {
@@ -44,16 +41,17 @@ interface IElectroCardsFind {
 }
 
 const Labels = [
-    {label: '№ Занятия', id: 'lessonId'},
-    {label: 'Название', id: 'title'},
-    {label: 'Имя преподавателя', id: 'fio'},
-    {label: 'Курс', id: 'course_name'},
-    {label: 'Дата проведения', id: 'date'},
+    {label: '№ счёта', id: 'accountId'},
+    {label: 'Название занятия', id: 'title'},
+    {label: 'Сумма к оплате', id: 'summa'},
+    {label: 'Статус', id: 'payment'},
 ]
 
-export default function LessonsTable() {
-    const classes = useStyles();
+export default function AccountsTable() {
     const router = useRouter<{id: string}>();
+    const {id} = router.match.params;
+    console.log(id)
+    const classes = useStyles();
     const { loading, error, request, clearError } = useHttp();
     const [data, setData] = useState<IElectroCardsFind>({rows: [], count: 0});
     const [orderBy, setOrderBy] = useState<string | undefined>();
@@ -61,21 +59,17 @@ export default function LessonsTable() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [query, setQuery] = useState<string |undefined>();
-    const {id} = router.match.params;
 
-    console.log(id)
     async function onGetData(params: {
         page?: number,
         rowsPerPage?: number,
         order?: 'asc' | 'desc',
         orderBy?: string,
-        query?: string,
-        lessonId?: number,
+        accountId: number,
     }) {
-        console.log(params)
 
         try {
-            const data = await (await (axios.get<IElectroCardsFind>('/api/school/lessons/find', {params}))).data
+            const data = await (await (axios.get<IElectroCardsFind>('/api/school/accounts/find', {params}))).data
             setData({rows: data.rows, count: data.count})
         } catch (e) { }
     }
@@ -86,10 +80,9 @@ export default function LessonsTable() {
             rowsPerPage,
             orderBy,
             order,
-            query,
-            lessonId: id === 'undefined' ? undefined : +id,
+            accountId: +id,
         })
-    }, [page, rowsPerPage, orderBy, order, query, id])
+    }, [page, rowsPerPage, orderBy, order, id])
 
 
     const handleChangeRowsPerPage = (event: any) => {
@@ -111,11 +104,11 @@ export default function LessonsTable() {
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
-                        {/* <TextField
+                        <TextField
                         onChange={(e) => setQuery(e.target.value)}
                         style={{width: '100%', margin: '16px'}}
                         label="Поиск"
-                        variant="outlined" /> */}
+                        variant="outlined" />
                         <TableRow>
                             {Labels.map(e => 
                             <TableCell align="center">
@@ -132,18 +125,13 @@ export default function LessonsTable() {
                     <TableBody>
                         {data.rows.length > 0 ? data.rows.map(row => (
                             <TableRow
+                            onClick={() => router.history.push(RedirectConfig.lessons(+id))}
+                            className={classes.row}
                             >
-                                <TableCell align="center">{row.lessonId}</TableCell>
+                                <TableCell align="center">{row.accountId}</TableCell>
                                 <TableCell align="center">{row.title}</TableCell>
-                                <TableCell
-                                className={classes.row}
-                                onClick={() => router.history.push(RedirectConfig.teachers(row.teacherId))}
-                                align="center">{row.fio}</TableCell>
-                                <TableCell
-                                className={classes.row}
-                                onClick={() => router.history.push(RedirectConfig.cources(row.courseId))}
-                                align="center">{row.course_name}</TableCell>
-                                <TableCell align="center">{new Date(row.date).toLocaleDateString()}</TableCell>
+                                <TableCell align="center">{row.summa}</TableCell>
+                                <TableCell align="center">{row.payment ? 'Оплачено' : 'Не оплачено'}</TableCell>
                             </TableRow>
                         )) :
                         <TableRow>

@@ -3,11 +3,11 @@ const sqlRows = (params) => {
     return `
         SELECT * 
         FROM lessons
+        INNER JOIN cources
+        ON lessons.course_id = cources.course_id
         INNER JOIN teachers
-        ON lessons.teacherId = teachers.teacherId
-        INNER JOIN courses
-        ON lessons.courseId = courses.courseId
-        ${params.lessonId ? `WHERE lessonId = ${params.lessonId}` : ''}
+        ON lessons.teacher_id = teachers.teacher_id
+        ${params.query && `WHERE lesson_name LIKE '%${params.query}%'`}
         LIMIT ${params.rowPerPage}
         OFFSET ${params.offset}
     `

@@ -4,6 +4,8 @@ import { AuthContext } from './../../context/AuthContext';
 import {withRouter } from 'react-router-dom';
 import { RedirectHandler, RedirectConfig } from './redirect';
 import { useRouter } from '../hooks/router.hook';
+import { RedirectStudentConfig } from './../pages/School/students/redirect';
+import { RedirectLessonsConfig } from './../pages/School/lessons/redirect';
 
 const Navigation = (props: any) => {
 
@@ -19,7 +21,7 @@ const Navigation = (props: any) => {
 
     return (
         <>
-            <MenuItem onClick={() => {
+            {/* <MenuItem onClick={() => {
                 props.history.push(`/detail/${auth.userId}`)
             }}>
                 Table
@@ -38,9 +40,23 @@ const Navigation = (props: any) => {
                 props.history.push(`/gifts`)
             }}>
                 Gifts
-            </MenuItem>
+            </MenuItem> */}
+            <MenuItem onClick={() => {
+                    router.history.push(RedirectStudentConfig.list)
+                }}>
+                    Ученики
+                </MenuItem>
+                <MenuItem onClick={() => {
+                    router.history.push(RedirectLessonsConfig.list)
+                }}>Занятия</MenuItem>
+                <MenuItem onClick={() => {
+                    router.history.push(RedirectConfig.teachers())
+                }}>Преподаватели</MenuItem>
+                <MenuItem onClick={() => {
+                    router.history.push(RedirectConfig.cources)
+                }}>Курсы</MenuItem>
             <MenuItem onClick={logout}>Logout</MenuItem>
-            <Button onClick={() => setOpenMenu(!openMenu)}>
+            {/* <Button onClick={() => setOpenMenu(!openMenu)}>
                     Робототехника
             </Button>
             <Menu
@@ -48,20 +64,20 @@ const Navigation = (props: any) => {
                 onClose={() => setOpenMenu(false)}
             >
                 <MenuItem onClick={() => {
-                    router.history.push(RedirectConfig.students)
+                    router.history.push(RedirectStudentConfig.list)
                 }}>
                     Ученики
                 </MenuItem>
                 <MenuItem onClick={() => {
-                    router.history.push(RedirectConfig.lessons())
+                    router.history.push(RedirectLessonsConfig.list)
                 }}>Занятия</MenuItem>
                 <MenuItem onClick={() => {
                     router.history.push(RedirectConfig.teachers())
                 }}>Преподаватели</MenuItem>
                 <MenuItem onClick={() => {
-                    router.history.push(RedirectConfig.cources())
+                    router.history.push(RedirectConfig.cources)
                 }}>Курсы</MenuItem>
-            </Menu>
+            </Menu> */}
         </>
     );
 }

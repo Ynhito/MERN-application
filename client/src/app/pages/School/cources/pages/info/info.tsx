@@ -7,11 +7,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { TablePagination, TableSortLabel, TextField } from '@material-ui/core';
+import { TablePagination, TableSortLabel, TextField, Typography } from '@material-ui/core';
 import axios from 'axios';
-import { useHttp } from '../../../hooks/http.hook';
-import { useRouter } from '../../../hooks/router.hook';
-import { RedirectConfig } from './../../../components/redirect';
+import { useRouter } from '../../../../../hooks/router.hook';
 
 const useStyles = makeStyles({
     table: {
@@ -25,52 +23,63 @@ const useStyles = makeStyles({
     }
 });
 
-interface item {
-    accountId: number;
-    lessonId: number;
-    payment: boolean;
-    title: string;
-    teacherId: number;
-    courseId: number;
-    summa: number;
+interface Info {
+    course_id: number,
+    course_name: string;
+    date_end: Date,
+    date_start: Date,
+    lesson_count: number,
+    price: number,
 }
 
-interface IElectroCardsFind {
+interface item {
+    student: any;
+    payment: number;
+    visit: number;
+    monthVisit: number;
+    debt: number;
+}
+
+interface ICourseInfoFind {
     rows: item[],
     count: number,
+    info?: Info;
 }
 
 const Labels = [
-    {label: '№ счёта', id: 'accountId'},
-    {label: 'Название занятия', id: 'title'},
-    {label: 'Сумма к оплате', id: 'summa'},
-    {label: 'Статус', id: 'payment'},
+    {label: 'Студент'},
+    {label: 'Оплачено'},
+    {label: 'Посетили', id: 'visit'},
+    {label: 'За текущий месяц'},
+    {label: 'Долг'},
 ]
 
-export default function AccountsTable() {
-    const router = useRouter<{id: string}>();
-    const {id} = router.match.params;
-    console.log(id)
+export default function CoursesInfo() {
     const classes = useStyles();
-    const { loading, error, request, clearError } = useHttp();
-    const [data, setData] = useState<IElectroCardsFind>({rows: [], count: 0});
+    const router = useRouter<{id: string}>();
+    const [data, setData] = useState<ICourseInfoFind>({rows: [], count: 0});
     const [orderBy, setOrderBy] = useState<string | undefined>();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [query, setQuery] = useState<string |undefined>();
+    const {id} = router.match.params;
+    console.log(router.match.params)
 
+    console.log(id)
     async function onGetData(params: {
         page?: number,
         rowsPerPage?: number,
         order?: 'asc' | 'desc',
         orderBy?: string,
-        accountId: number,
+        query?: string,
+        courseId?: number,
     }) {
+        console.log(params)
 
         try {
-            const data = await (await (axios.get<IElectroCardsFind>('/api/school/accounts/find', {params}))).data
-            setData({rows: data.rows, count: data.count})
+            const data = await (await (axios.get<ICourseInfoFind>(`/api/school/cources/info/${params.courseId}`, {params}))).data
+            setData({rows: data.rows, count: data.count, info: data.info})
         } catch (e) { }
     }
 
@@ -80,9 +89,10 @@ export default function AccountsTable() {
             rowsPerPage,
             orderBy,
             order,
-            accountId: +id,
+            query,
+            courseId: id === 'undefined' ? undefined : +id,
         })
-    }, [page, rowsPerPage, orderBy, order, id])
+    }, [page, rowsPerPage, orderBy, order, query, id])
 
 
     const handleChangeRowsPerPage = (event: any) => {
@@ -101,37 +111,42 @@ export default function AccountsTable() {
 
     return (
         <>
+            <Typography variant="h3">{data.info && data.info.course_name}</Typography>
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
-                        <TextField
+                        {/* <TextField
                         onChange={(e) => setQuery(e.target.value)}
                         style={{width: '100%', margin: '16px'}}
                         label="Поиск"
-                        variant="outlined" />
+                        variant="outlined" /> */}
                         <TableRow>
                             {Labels.map(e => 
                             <TableCell align="center">
-                            <TableSortLabel
+                                {e.label}
+                            {/* <TableSortLabel
                                 active={orderBy === e.id}
                                 direction={orderBy === e.id ? order : 'asc'}
-                                onClick={handleChangeSort(e.id)}
+                                onClick={e.id ? handleChangeSort(e.id) : undefined}
                                 >
                                 {e.label}
-                            </TableSortLabel>
+                            </TableSortLabel> */}
                             </TableCell>)}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {data.rows.length > 0 ? data.rows.map(row => (
                             <TableRow
-                            onClick={() => router.history.push(RedirectConfig.lessons(+id))}
                             className={classes.row}
+                            // onClick={() => router.history.push(RedirectConfig.accounts(row.accountId))}
                             >
-                                <TableCell align="center">{row.accountId}</TableCell>
-                                <TableCell align="center">{row.title}</TableCell>
-                                <TableCell align="center">{row.summa}</TableCell>
-                                <TableCell align="center">{row.payment ? 'Оплачено' : 'Не оплачено'}</TableCell>
+                                <TableCell align="center">
+                                    {row.student.name} {row.student.second_name}
+                                </TableCell>
+                                <TableCell align="center">{row.payment}</TableCell>
+                                <TableCell align="center">{row.visit}</TableCell>
+                                <TableCell align="center">{row.monthVisit}</TableCell>
+                                <TableCell align="center">{row.debt}</TableCell>
                             </TableRow>
                         )) :
                         <TableRow>

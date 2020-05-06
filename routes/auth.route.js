@@ -28,14 +28,14 @@ router.post(
 
       const { email, password } = req.body;
 
-      const rows = await mysqlLib.executeQuery("SELECT * FROM пользователи WHERE Email=?", [email]);
+      const rows = await mysqlLib.executeQuery("SELECT * FROM users WHERE Email=?", [email]);
       if (rows.length > 0) {
         res.status(400).json({ message: 'Такой пользователь уже существует!' })
       }
 
       const hashedPassword = await bcrypt.hash(password, 12);
 
-      await mysqlLib.executeQuery("INSERT INTO пользователи (Email, Пароль) VALUES (?,?)", [email, hashedPassword]);
+      await mysqlLib.executeQuery("INSERT INTO users (Email, Пароль) VALUES (?,?)", [email, hashedPassword]);
 
       res.status(201).json({ message: 'Пользователь создан' })
 
@@ -63,7 +63,7 @@ router.post(
       }
       const { email, password } = req.body;
 
-      const user = await (await mysqlLib.executeQuery("SELECT * FROM пользователи WHERE Email=?", [email]))[0];
+      const user = await (await mysqlLib.executeQuery("SELECT * FROM users WHERE Email=?", [email]))[0];
 
       if (!user) {
         res.status(400).json({ message: 'Пользователь не найден' })

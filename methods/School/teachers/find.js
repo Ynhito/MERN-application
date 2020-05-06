@@ -1,11 +1,9 @@
 const mysqlLib = require('../../../@libs/mysql.lib');
-// ${params.query && `AND WHERE fio LIKE '%${params.query}%'`}
 const sqlRows = (params) => {
     return `
         SELECT * 
         FROM teachers
-        ${params.query && `WHERE fio LIKE '%${params.query}%'`}
-        ${params.teacherId ? `WHERE teacherId = ${params.teacherId}` : ''}
+        ${params.query && `WHERE teacher_fullName LIKE '%${params.query}%'`}
         LIMIT ${params.rowPerPage}
         OFFSET ${params.offset}
     `

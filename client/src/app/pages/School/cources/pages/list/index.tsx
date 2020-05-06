@@ -7,11 +7,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { TablePagination, TableSortLabel, TextField } from '@material-ui/core';
+import { TablePagination, TableSortLabel, TextField, Typography, Button, Box } from '@material-ui/core';
 import axios from 'axios';
-import { useHttp } from '../../../hooks/http.hook';
-import { useRouter } from '../../../hooks/router.hook';
-import { RedirectConfig } from './../../../components/redirect';
+import { useHttp } from '../../../../../hooks/http.hook';
+import { useRouter } from '../../../../../hooks/router.hook';
+import { RedirectConfig } from '../../../../../components/redirect';
+import { RedirectCoursesConfig } from '../../redirect';
 
 const useStyles = makeStyles({
     table: {
@@ -26,9 +27,12 @@ const useStyles = makeStyles({
 });
 
 interface item {
-    accountId: number;
-    fio: string;
-    phone: number;
+    course_id: number;
+    course_name: string;
+    price: number;
+    lesson_count: number;
+    date_start: number;
+    date_end: number;
 }
 
 interface IElectroCardsFind {
@@ -37,12 +41,13 @@ interface IElectroCardsFind {
 }
 
 const Labels = [
-    {label: '№ счёта', id: 'accountId'},
-    {label: 'ФИО', id: 'fio'},
-    {label: 'Телефон', id: 'payment'},
+    {label: 'Название курса', id: 'course_name'},
+    {label: 'Кол-во занятий', id: 'lesson_count'},
+    {label: 'Цена', id: 'price'},
+    {label: 'Длительность'},
 ]
 
-export default function StudentsTable() {
+export default function CoursesTable() {
     const classes = useStyles();
     const router = useRouter();
     const { loading, error, request, clearError } = useHttp();
@@ -60,9 +65,10 @@ export default function StudentsTable() {
         orderBy?: string,
         query?: string,
     }) {
+        console.log(params)
 
         try {
-            const data = await (await (axios.get<IElectroCardsFind>('/api/school/students/find', {params}))).data
+            const data = await (await (axios.get<IElectroCardsFind>('/api/school/cources/find', {params}))).data
             setData({rows: data.rows, count: data.count})
         } catch (e) { }
     }
@@ -73,7 +79,7 @@ export default function StudentsTable() {
             rowsPerPage,
             orderBy,
             order,
-            query
+            query,
         })
     }, [page, rowsPerPage, orderBy, order, query])
 
@@ -94,21 +100,30 @@ export default function StudentsTable() {
 
     return (
         <>
+            <Typography variant="h3">Курсы</Typography>
             <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="simple table">
-                    <TableHead>
-                        <TextField
+                <Box display="flex" justifyContent="space-between" width="100%">
+                    <TextField
                         onChange={(e) => setQuery(e.target.value)}
                         style={{width: '100%', margin: '16px'}}
                         label="Поиск"
                         variant="outlined" />
+                    <Button
+                        onClick={() => router.history.push(RedirectCoursesConfig.create)}
+                        variant="contained"
+                        color="primary">
+                        Добавить курс
+                    </Button>
+                </Box>
+                <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
                         <TableRow>
                             {Labels.map(e => 
                             <TableCell align="center">
                             <TableSortLabel
                                 active={orderBy === e.id}
                                 direction={orderBy === e.id ? order : 'asc'}
-                                onClick={handleChangeSort(e.id)}
+                                onClick={e.id ? handleChangeSort(e.id) : undefined}
                                 >
                                 {e.label}
                             </TableSortLabel>
@@ -119,10 +134,18 @@ export default function StudentsTable() {
                         {data.rows.length > 0 ? data.rows.map(row => (
                             <TableRow
                             className={classes.row}
-                            onClick={() => router.history.push(RedirectConfig.accounts(row.accountId))}>
-                                <TableCell align="center">{row.accountId}</TableCell>
-                                <TableCell align="center">{row.fio}</TableCell>
-                                <TableCell align="center">{row.phone}</TableCell>
+                            onClick={() => {
+                                console.log(row.course_id)
+                                router.history.push(RedirectCoursesConfig.info(row.course_id))
+                            }}
+                            >
+                                <TableCell align="center">{row.course_name}</TableCell>
+                                <TableCell align="center">{row.lesson_count}</TableCell>
+                                <TableCell align="center">{row.price}</TableCell>
+                                <TableCell align="center">
+                                    {new Date(row.date_start).toLocaleDateString()}
+                                    - {new Date(row.date_end).toLocaleDateString()}
+                                </TableCell>
                             </TableRow>
                         )) :
                         <TableRow>

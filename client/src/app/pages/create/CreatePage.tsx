@@ -63,10 +63,10 @@ const CreatePage = () => {
                                         onBlur={() => console.log('qwdqwd')}
                                     />
                                 </div>
-                                <Button
+                                {/* <Button
                                     onClick={() => pdfMake.createPdf(dd).download()}>
                                     Генерировать
-                            </Button>
+                            </Button> */}
                                 <Wrapper />
                                 <Button
                                 // onClick={getFavorite}
