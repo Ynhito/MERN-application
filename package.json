@@ -21,7 +21,7 @@
     "mysql": "^2.17.1",
     "pdfmake": "^0.1.64",
     "query-string": "^6.11.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   },
   "devDependencies": {
     "@types/pdfmake": "^0.1.9",
